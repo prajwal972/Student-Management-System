@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Student — DBMS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+  <div class="logo">Student <span>DBMS</span></div>
+  <div class="nav-links">
+    <a href="{{ url_for('index') }}">🏠 Home</a>
+    <a href="{{ url_for('add') }}" class="add-btn">＋ Add Student</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  {% for cat, msg in get_flashed_messages(with_categories=true) %}
+  <div class="alert {{ cat }}">{{ '✅' if cat == 'success' else '❌' }} {{ msg }}</div>
+  {% endfor %}
+
+  <div class="page-title">
+    <h1>Add New Student</h1>
+    <p>Fill in all the details to register a new student.</p>
+  </div>
+
+  <div class="form-wrap">
+    <div class="form-card">
+
+      <div class="form-head">
+        <h2>📋 Student Registration</h2>
+        <p>All fields are required</p>
+      </div>
+
+      <form action="{{ url_for('add') }}" method="POST">
+        <div class="form-body">
+
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="name" placeholder="e.g. Prajwal Sharma" required autofocus>
+          </div>
+
+          <div class="two-col">
+            <div class="form-group">
+              <label>Roll Number</label>
+              <input type="text" name="roll_no" placeholder="e.g. CS2024001" required>
+            </div>
+            <div class="form-group">
+              <label>Course</label>
+              <select name="course" required>
+                <option value="" disabled selected>Select course</option>
+                <option>B.Tech CSE</option>
+                <option>B.Tech IT</option>
+                <option>B.Tech ECE</option>
+                <option>B.Tech Mech</option>
+                <option>BCA</option>
+                <option>MCA</option>
+                <option>B.Sc CS</option>
+                <option>M.Tech</option>
+                <option>MBA</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" name="email" placeholder="e.g. student@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" name="phone" placeholder="e.g. 9876543210"
+                   pattern="[0-9]{10}" title="10-digit number" required>
+          </div>
+
+        </div>
+        <div class="form-foot">
+          <button type="submit" class="btn btn-amber">✅ Add Student</button>
+          <a href="{{ url_for('index') }}" class="btn btn-ghost">← Back</a>
+          <button type="reset" class="btn btn-ghost">🔄 Reset</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

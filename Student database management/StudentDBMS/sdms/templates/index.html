@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student DBMS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+  <div class="logo">Student <span>DBMS</span></div>
+  <div class="nav-links">
+    <a href="{{ url_for('index') }}">🏠 Home</a>
+    <a href="{{ url_for('add') }}" class="add-btn">＋ Add Student</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Flash messages -->
+  {% for cat, msg in get_flashed_messages(with_categories=true) %}
+  <div class="alert {{ cat }}">
+    {{ '✅' if cat == 'success' else '❌' }} {{ msg }}
+  </div>
+  {% endfor %}
+
+  <!-- Page title -->
+  <div class="page-title">
+    <h1>All Students</h1>
+    <p>Manage student records — add, search, edit or delete.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-box">
+      <div class="icon blue">🎓</div>
+      <div>
+        <div class="num">{{ students | length }}</div>
+        <div class="lbl">{{ 'Results' if query is defined and query else 'Total Students' }}</div>
+      </div>
+    </div>
+    <div class="stat-box">
+      <div class="icon amber">📚</div>
+      <div>
+        <div class="num">{{ students | map(attribute='course') | unique | list | length }}</div>
+        <div class="lbl">Courses</div>
+      </div>
+    </div>
+    <div class="stat-box">
+      <div class="icon green">✅</div>
+      <div>
+        <div class="num">Online</div>
+        <div class="lbl">DB Status</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <form class="search-row" action="{{ url_for('search') }}" method="GET">
+    <input type="text" name="q"
+           placeholder="🔍  Search by student name or roll number..."
+           value="{{ query if query is defined and query else '' }}">
+    <button type="submit" class="btn btn-blue">Search</button>
+    {% if query is defined and query %}
+    <a href="{{ url_for('index') }}" class="btn btn-ghost">✕ Clear</a>
+    {% endif %}
+  </form>
+
+  {% if query is defined and query %}
+  <div class="notice">
+    🔎 Showing results for: <strong>"{{ query }}"</strong> — {{ students | length }} record(s) found.
+  </div>
+  {% endif %}
+
+  <!-- Table card -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Student Records</h2>
+      <span>{{ students | length }} student(s)</span>
+    </div>
+
+    {% if students %}
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Roll No</th>
+            <th>Course</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in students %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td><strong>{{ s.name }}</strong></td>
+            <td><span class="badge badge-amber">{{ s.roll_no }}</span></td>
+            <td><span class="badge badge-blue">{{ s.course }}</span></td>
+            <td>{{ s.email }}</td>
+            <td>{{ s.phone }}</td>
+            <td>
+              <div class="actions">
+                <a href="{{ url_for('update', sid=s.id) }}" class="btn btn-ghost btn-sm">✏️ Edit</a>
+                <form action="{{ url_for('delete', sid=s.id) }}" method="POST" style="display:inline"
+                      onsubmit="return confirm('Delete {{ s.name }}? This cannot be undone.')">
+                  <button type="submit" class="btn btn-red btn-sm">🗑 Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% else %}
+    <div class="empty">
+      <div class="big">🎓</div>
+      <h3>{{ 'No results for "' + query + '"' if query is defined and query else 'No students yet' }}</h3>
+      <p>{{ 'Try a different search term.' if query is defined and query else 'Click + Add Student to get started.' }}</p>
+    </div>
+    {% endif %}
+
+  </div><!-- /card -->
+</div><!-- /container -->
+</body>
+</html>
