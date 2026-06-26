@@ -33,7 +33,7 @@ StudentDBMS/
 └── static/
     └── style.css
     
-Installation
+Installations
 
 Clone the repository
 Install dependencies
